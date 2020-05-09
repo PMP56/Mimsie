@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:mimsie/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -66,26 +67,41 @@ class _UploaderState extends State<Uploader> {
       );
 
     }else{
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          FlatButton.icon(
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              color: Colors.lightBlue,
-              onPressed: _startUpload,
-              icon: Icon(Icons.cloud_upload, color: Colors.white,),
-              label: Text('Post', style: TextStyle(color: Colors.white, fontSize: 16),)
-          ),
-          FlatButton.icon(
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              color: Colors.redAccent,
-              onPressed: (){
-                Navigator.of(context).pushReplacementNamed('/home');
-              },
-              icon: Icon(Icons.remove_circle, color: Colors.white,),
-              label: Text('Cancle', style: TextStyle(color: Colors.white, fontSize: 16),)
-          ),
-        ],
+      return Container(
+        width: 375,
+        padding: EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          //color: Colors.black38,
+          border: Border.all(width: 2, color: Colors.white),
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15))
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                IconButton(
+                    onPressed: _startUpload,
+                    icon: Icon(Icons.cloud_upload, color: Colors.lightBlue[300], size: 35,),
+                ),
+                Text('Upload', style: TextStyle(color: Colors.white),)
+              ],
+            ),
+            //VerticalDivider(thickness: 1, color: Colors.white,),
+            Column(
+              children: <Widget>[
+                IconButton(
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    onPressed: (){
+                      Navigator.of(context).pushReplacementNamed('/home');
+                    },
+                    icon: Icon(Icons.remove_circle, color: Colors.redAccent, size: 35,),
+                ),
+                Text('Cancel', style: TextStyle(color: Colors.white),)
+              ],
+            ),
+          ],
+        ),
       );
         
     }

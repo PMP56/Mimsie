@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mimsie/user/screens/uploader.dart';
 
@@ -18,74 +19,97 @@ class _UploadState extends State<Upload> {
 
   Future<void> pickImage() async{
     File selected = await ImagePicker.pickImage(source: ImageSource.gallery);
+//    if (selected != null){
+//      _cropImage();
+//    }
     setState(() {
       _imageFile = selected;
     });
-    return selected.path;
+    return _cropImage();
+  }
+
+  Future<void> _cropImage() async{
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: _imageFile.path,
+      compressQuality: 80,
+      androidUiSettings: AndroidUiSettings(
+        toolbarColor: Color.fromRGBO(0, 20, 30, 1),
+        toolbarWidgetColor: Colors.white,
+        activeControlsWidgetColor: Colors.redAccent,
+        toolbarTitle: 'Crop Image',
+        lockAspectRatio: false
+      ),
+
+    );
+    setState(() {
+      _imageFile = cropped?? _imageFile;
+    });
+    return cropped.path;
   }
 
   Widget picUpload(context){
     double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
     return Container(
+      height: 7 * _height / 10,
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Image.asset('assets/avatar1.png', fit: BoxFit.contain, width: 50,),
-              SizedBox(width: 15,),
-              Container(
-                width: 3 * _width / 4,
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    border: InputBorder.none,
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'Caption...',
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Image.asset('assets/avatar1.png', fit: BoxFit.contain, width: 50,),
+                SizedBox(width: 15,),
+                Container(
+                  width: 3 * _width / 4,
+                  child: TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      border: InputBorder.none,
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'Caption...',
+                    ),
+                    onChanged: (value){
+                      setState(() {
+                        _postText = value;
+                      });
+                    },
                   ),
-                  onChanged: (value){
-                    setState(() {
-                      _postText = value;
-                    });
+                )
+              ],
+            ),
+            SizedBox(height: 5,),
+            Divider(thickness: 1, color: Colors.white,),
+            SizedBox(height: 10,),
+            if (_imageFile == null) ...[
+              SizedBox(height: 75,),
+              Container(
+                height: 275,
+                child: FlatButton(
+                  padding: EdgeInsets.all(0),
+                  //elevation: 5,
+                  color: Colors.lightBlue,
+                  child: Image.asset('assets/emptyImg.png', fit: BoxFit.contain,),
+                  onPressed: (){
+                    pickImage();
                   },
                 ),
-              )
-            ],
-          ),
-          SizedBox(height: 5,),
-          Divider(thickness: 2,),
-          SizedBox(height: 5,),
-          if (_imageFile == null)
-            Container(
-              height: 40,
-              child: RaisedButton(
-                elevation: 5,
-                color: Colors.lightBlue,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.add_photo_alternate, size: 30, color: Colors.white,),
-                    SizedBox(width: 10,),
-                    Text('Upload a photo', style: TextStyle(color: Colors.white, fontSize: 16),)
-                  ],
-                ),
-                onPressed: (){
-                  pickImage();
-                },
               ),
-            ),
-          //SizedBox(height: 20,),
-          if (_imageFile != null) ...[
-            Image.file(_imageFile, height: 400,),
-            SizedBox(height: 10,),
-            Uploader(file: _imageFile, caption: _postText)
+            ],
+            //SizedBox(height: 20,),
+            if (_imageFile != null) ...[
+              //SizedBox(height: 10,),
+              Uploader(file: _imageFile, caption: _postText),
+              Image.file(_imageFile, width: 375,),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -96,60 +120,75 @@ class _UploadState extends State<Upload> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
-    return SingleChildScrollView(
-      child: Container(
-        //padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        //color: Color.fromRGBO(0, 20, 30, 1),
-        height: 196 * _height / 240,
-        color: Colors.grey[200],
-        child: Stack(
-          children: <Widget>[
+    return Container(
+      //padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      color: Color.fromRGBO(0, 20, 30, 1),
+      //height: 63 * _height / 80,
+      //color: Colors.grey[200],
+      child: Stack(
+        children: <Widget>[
 
-            picUpload(context),
-            SizedBox(height: 30,),
-            Positioned(
-              bottom: 0,
-              child: ClipPath(
-                clipper: (_pageIndex == 1)?FirstClipper() : SecondClipper(),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(0, 20, 30, 1),
-                    //border: Border.all(width: 3, color: Colors.white)
-                  ),
-                  //alignment: Alignment.bottomCenter,
-                  width: _width,
-                  height: 45,
+          picUpload(context),
+          SizedBox(height: 30,),
+          Positioned(
+            bottom: 3,
+            child: ClipPath(
+              clipper: (_pageIndex == 1)?FirstClipper() : SecondClipper(),
+              child: Container(
+                decoration: BoxDecoration(
+                  //color: Color.fromRGBO(0, 20, 30, 1),
+                  color: Colors.grey[300]
+                  //border: Border.all(width: 3, color: Colors.white)
                 ),
+                //alignment: Alignment.bottomCenter,
+                width: _width,
+                height: 45,
               ),
             ),
-            Positioned(
-              bottom: (_pageIndex == 1)? 15 : 0,
-              left: 70,
-              child: IconButton(
-                icon: Icon(Icons.image, color: (_pageIndex == 1)? Color.fromRGBO(0, 20, 30, 1) : Colors.white,),
-                iconSize: (_pageIndex == 1)? 40 : 30,
-                onPressed: (){
-                  setState(() {
-                    _pageIndex = 1;
-                  });
-                },
+          ),
+          Positioned(
+            bottom: 0,
+            child: ClipPath(
+              clipper: (_pageIndex == 1)?FirstClipper() : SecondClipper(),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(0, 20, 30, 1),
+                  // color: Colors.grey[300]
+                  //border: Border.all(width: 3, color: Colors.white)
+                ),
+                //alignment: Alignment.bottomCenter,
+                width: _width,
+                height: 45,
               ),
             ),
-            Positioned(
-              bottom: (_pageIndex == 2)? 15 : 0,
-              right: 80,
-              child: IconButton(
-                icon: Icon(Icons.camera, color: (_pageIndex == 2)? Color.fromRGBO(0, 20, 30, 1) : Colors.white,),
-                iconSize: (_pageIndex == 2)? 40 : 30,
-                onPressed: (){
-                  setState(() {
-                    _pageIndex = 2;
-                  });
-                },
-              ),
+          ),
+          Positioned(
+            bottom: (_pageIndex == 1)? 15 : -3,
+            left: 70,
+            child: IconButton(
+              icon: Icon(Icons.image, color: Colors.white,),
+              iconSize: (_pageIndex == 1)? 40 : 30,
+              onPressed: (){
+                setState(() {
+                  _pageIndex = 1;
+                });
+              },
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            bottom: (_pageIndex == 2)? 15 : -3,
+            right: 80,
+            child: IconButton(
+              icon: Icon(Icons.camera, color: Colors.white,),
+              iconSize: (_pageIndex == 2)? 40 : 30,
+              onPressed: (){
+                setState(() {
+                  _pageIndex = 2;
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

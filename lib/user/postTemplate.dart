@@ -14,6 +14,9 @@ class PostTemplate extends StatefulWidget {
 
 class _PostTemplateState extends State<PostTemplate> {
 
+  bool _postLike;
+  bool _postFav;
+
   PreloadPageController controller = PreloadPageController(
     initialPage: 0,
     keepPage: true,
@@ -108,13 +111,33 @@ class _PostTemplateState extends State<PostTemplate> {
             Container(
               alignment: Alignment.centerRight,
               child: Container(
-                padding: EdgeInsets.all(3),
+                padding: EdgeInsets.only(left: 10),
                 height: _height,
-                color: Color.fromRGBO(0, 20, 30, 0.5),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerRight,
+                    end: Alignment.centerLeft,
+                    colors: [Color.fromRGBO(0, 20, 30, 0.5), Colors.transparent]
+                  )
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
 
+                    IconButton(
+                      icon: Icon(Icons.people, color: Colors.white,),
+                      iconSize: 30,
+                      onPressed: (){},
+                    ),
+                    Text(post.viewCount.toString(), style: TextStyle(color: Colors.white),),
+                    SizedBox(height: 15,),
+                    IconButton(
+                      icon: Icon(Icons.message, color: Colors.white,),
+                      iconSize: 30,
+                      onPressed: (){},
+                    ),
+                    Text('100', style: TextStyle(color: Colors.white),),
+                    SizedBox(height: 15,),
                     FloatingActionButton(
                       child: Image.asset('assets/icons/haha.png', height: 40, fit: BoxFit.contain,),
                       elevation: 20,
@@ -122,31 +145,17 @@ class _PostTemplateState extends State<PostTemplate> {
                       onPressed: (){},
                     ),
                     Text(post.likeCount.toString(), style: TextStyle(color: Colors.white),),
-                    SizedBox(height: 20,),
-                    IconButton(
-                      icon: Icon(Icons.people, color: Colors.white,),
-                      iconSize: 35,
-                      onPressed: (){},
-                    ),
-                    Text(post.viewCount.toString(), style: TextStyle(color: Colors.white),),
-                    SizedBox(height: 20,),
-                    IconButton(
-                      icon: Icon(Icons.message, color: Colors.white,),
-                      iconSize: 35,
-                      onPressed: (){},
-                    ),
-                    Text('100', style: TextStyle(color: Colors.white),),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 15,),
                     IconButton(
                       icon: Icon(Icons.star_border, color: Colors.white,),
-                      iconSize: 40,
+                      iconSize: 35,
                       onPressed: (){},
                     ),
                     Text(post.favCount.toString(), style: TextStyle(color: Colors.white),),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 15,),
                     IconButton(
                       icon: Icon(Icons.share, color: Colors.white,),
-                      iconSize: 35,
+                      iconSize: 30,
                       onPressed: (){},
                     ),
                     Text('Share', style: TextStyle(color: Colors.white, letterSpacing: 1),),
