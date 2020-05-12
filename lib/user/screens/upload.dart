@@ -131,13 +131,13 @@ class _UploadState extends State<Upload> {
           picUpload(context),
           SizedBox(height: 30,),
           Positioned(
-            bottom: 3,
+            bottom:  3,
             child: ClipPath(
               clipper: (_pageIndex == 1)?FirstClipper() : SecondClipper(),
               child: Container(
                 decoration: BoxDecoration(
                   //color: Color.fromRGBO(0, 20, 30, 1),
-                  color: Colors.grey[300]
+                  color: Colors.lightBlueAccent
                   //border: Border.all(width: 3, color: Colors.white)
                 ),
                 //alignment: Alignment.bottomCenter,

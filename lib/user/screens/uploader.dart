@@ -73,7 +73,7 @@ class _UploaderState extends State<Uploader> {
         decoration: BoxDecoration(
           //color: Colors.black38,
           border: Border.all(width: 2, color: Colors.white),
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15))
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

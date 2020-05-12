@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mimsie/services/firestore.dart';
+import 'package:mimsie/user/allpages.dart';
+import 'package:mimsie/user/screens/userPage/otherUser.dart';
+import 'package:mimsie/user/screens/userPage/user.dart';
 import 'package:provider/provider.dart';
 import 'package:mimsie/models/posts.dart';
 import 'package:http/http.dart' as http;
@@ -63,13 +66,21 @@ class _PostTemplateState extends State<PostTemplate> {
                   children: <Widget>[
                     Container(
                       child: FutureBuilder(
-                        future: DatabaseService().getPostUser(post.uid),
+                        future: DatabaseService().getUser(post.uid),
                         builder: (context, snapshot){
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return Image.asset('assets/logo.png', fit: BoxFit.contain, width: 45, height: 45,);
                           }else{
                             String index = snapshot.data[0].data['avatarIndex'].toString();
-                            return Image.asset('assets/avatar$index.png', fit: BoxFit.contain, width: 45,);
+                            return GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => OtherUser(uid: post.uid,)
+                                ));
+                                print('${post.uid}');
+                              },
+                              child: Image.asset('assets/avatar$index.png', fit: BoxFit.contain, width: 45,)
+                            );
                           }
                         },
                         //child: Image.asset('assets/avatar1.png', fit: BoxFit.contain, width: 45,)
@@ -85,23 +96,32 @@ class _PostTemplateState extends State<PostTemplate> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         FutureBuilder(
-                          future: DatabaseService().getPostUser(post.uid),
+                          future: DatabaseService().getUser(post.uid),
                           builder: (context, snapshot){
                             if (snapshot.connectionState == ConnectionState.waiting){
                               return Text('...');
                             }else{
-                              return Text(
-                                ': ' + snapshot.data[0].data['nickname'],
-                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Infographic'),
+                              return GestureDetector(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => OtherUser(uid: post.uid,)
+                                  ));
+                                  print('${post.uid}');
+                                },
+                                child: Text(
+                                  ': ' + snapshot.data[0].data['nickname'],
+                                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Infographic'),
+                                ),
                               );
                             }
                           },
                         ),
                         SizedBox(height: 10,),
-                        Text(
-                          post.postText,
-                          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Roberto', letterSpacing: 0.3),
-                        ),
+                        if (post.postText != '')
+                          Text(
+                            post.postText,
+                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Roberto', letterSpacing: 0.3),
+                          ),
                       ],
                     ),
                   ],
@@ -122,25 +142,27 @@ class _PostTemplateState extends State<PostTemplate> {
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  //crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
 
                     IconButton(
                       icon: Icon(Icons.people, color: Colors.white,),
-                      iconSize: 30,
+                      iconSize: 25,
                       onPressed: (){},
                     ),
                     Text(post.viewCount.toString(), style: TextStyle(color: Colors.white),),
                     SizedBox(height: 15,),
                     IconButton(
                       icon: Icon(Icons.message, color: Colors.white,),
-                      iconSize: 30,
+                      iconSize: 25,
                       onPressed: (){},
                     ),
                     Text('100', style: TextStyle(color: Colors.white),),
                     SizedBox(height: 15,),
                     FloatingActionButton(
-                      child: Image.asset('assets/icons/haha.png', height: 40, fit: BoxFit.contain,),
-                      elevation: 20,
+                      heroTag: Text('Haha'),
+                      child: Image.asset('assets/haha.gif', height: 40, fit: BoxFit.contain,),
+                      elevation: 10,
                       backgroundColor: Colors.transparent,
                       onPressed: (){},
                     ),
@@ -148,14 +170,14 @@ class _PostTemplateState extends State<PostTemplate> {
                     SizedBox(height: 15,),
                     IconButton(
                       icon: Icon(Icons.star_border, color: Colors.white,),
-                      iconSize: 35,
+                      iconSize: 30,
                       onPressed: (){},
                     ),
                     Text(post.favCount.toString(), style: TextStyle(color: Colors.white),),
                     SizedBox(height: 15,),
                     IconButton(
                       icon: Icon(Icons.share, color: Colors.white,),
-                      iconSize: 30,
+                      iconSize: 25,
                       onPressed: (){},
                     ),
                     Text('Share', style: TextStyle(color: Colors.white, letterSpacing: 1),),

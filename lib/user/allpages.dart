@@ -3,7 +3,8 @@ import 'screens/upload.dart';
 import 'screens/home.dart';
 import 'screens/Highlights.dart';
 import 'screens/search.dart';
-import 'screens/user.dart';
+import 'screens/userPage/user.dart';
+import 'package:mimsie/services/auth.dart';
 
 class MyHome extends StatefulWidget {
   @override
@@ -12,6 +13,15 @@ class MyHome extends StatefulWidget {
 
 class _MyHomeState extends State<MyHome> {
   int currentPage = 0;
+  String uid;
+
+
+  void _getCurrentUid() async {
+    String s = await AuthService().getCurrentUid();
+    setState(() {
+      uid = s;
+    });
+  }
 
   List<BottomNavigationBarItem> buildBottomNav(){
     return [
@@ -44,6 +54,8 @@ class _MyHomeState extends State<MyHome> {
     ];
   }
 
+
+
   PageController pageController = PageController(
     initialPage: 0,
     keepPage: true,
@@ -52,15 +64,19 @@ class _MyHomeState extends State<MyHome> {
   Widget buildPageView(){
     return PageView(
       controller: pageController,
+      physics: BouncingScrollPhysics(),
       onPageChanged: (index){
         pageChanged(index);
+        if(index == 4){
+          _getCurrentUid();
+        }
       },
       children: <Widget>[
         Home(),
         Highlights(),
         Upload(),
         Search(),
-        User(),
+        User(uid: uid,),
       ],
     );
   }
@@ -117,6 +133,9 @@ class _MyHomeState extends State<MyHome> {
           selectedItemColor: Colors.white,
           onTap: (index){
             bottomTapped(index);
+            if(index == 4){
+              _getCurrentUid();
+            }
           },
         )
     );

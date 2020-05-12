@@ -14,6 +14,10 @@ class UserManagement {
       'nickname': details[0],
       'avatarIndex': details[1],
       'uid': user.uid,
+      'followersCount': 0,
+      'followingCount': 0,
+      'reactCount': 0,
+      'description': 'Click here to add description',
     }).then((value) {
       Navigator.of(context).pop();
       Navigator.of(context).pushReplacementNamed('/home');
@@ -30,7 +34,7 @@ class DatabaseService{
   final CollectionReference userCollection = Firestore.instance.collection('users');
   final CollectionReference postCollection = Firestore.instance.collection('posts');
 
-  Future getPostUser(String uid) async {
+  Future getUser(String uid) async {
     QuerySnapshot qn = await userCollection.where('uid', isEqualTo: uid).getDocuments();
     return qn.documents;
   }
@@ -67,4 +71,9 @@ class DatabaseService{
   Stream<List<Post>> get posts{
     return postCollection.orderBy('dateTime', descending: true).snapshots().map(_postListFromSnapshot);
   }
+
+  Stream<List<Post>> get userPosts{
+    return postCollection.where('uid', isEqualTo: uid).snapshots().map(_postListFromSnapshot);
+  }
+  
 }

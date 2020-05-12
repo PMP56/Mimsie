@@ -55,7 +55,6 @@ flutter:
   assets:
     - assets/logo.png
     - assets/logo_white.png
-    - assets/dp.png
     - assets/welcome.png
     - assets/man1.png
     - assets/man2.png
@@ -69,6 +68,7 @@ flutter:
     - assets/avatar6.png
     - assets/icons/haha.png
     - assets/emptyImg.png
+    - assets/haha.gif
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

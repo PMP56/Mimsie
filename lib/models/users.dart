@@ -1,7 +1,7 @@
-class User{
+class UserAdd{
   String nickName;
   String uid;
 
-  User({this.uid, this.nickName});
+  UserAdd({this.uid, this.nickName});
 
 }

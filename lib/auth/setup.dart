@@ -196,7 +196,7 @@ class _UserSetupState extends State<UserSetup> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              _nickname = value;
+                              _nickname = value.toLowerCase();
                             });
                           },
                         ),
